@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-import { Events, HTML5Video, Log, Playback, PlayerError, Utils } from '@guzzj/clappr-core'
+import { Events, HTML5Video, Log, Playback, PlayerError, Utils, version } from '@guzzj/clappr-core'
 import HLSJS from 'hls.js'
 
 const { now, assign, listContainsIgnoreCase } = Utils
@@ -15,7 +15,7 @@ Events.register('PLAYBACK_FRAGMENT_PARSING_METADATA')
 export default class HlsjsPlayback extends HTML5Video {
   get name() { return 'hls' }
 
-  get supportedVersion() { return { min: CLAPPR_CORE_VERSION } }
+  get supportedVersion() { return { min: version } }
 
   get levels() { return this._levels || [] }
 
