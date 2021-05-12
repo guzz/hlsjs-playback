@@ -27,6 +27,14 @@ export default class HlsjsPlayback extends HTML5Video {
 
   }
 
+  get currentAudioTrack() {
+    if (this._currentAudioTrack === null || this._currentAudioTrack === undefined)
+      return AUTO
+    else
+      return this._currentAudioTrack //0 is a valid level ID
+
+  }
+
   get isReady() {
     return this._isReadyState
   }
@@ -38,6 +46,13 @@ export default class HlsjsPlayback extends HTML5Video {
       this._hls.nextLevel = this._currentLevel
     else
       this._hls.currentLevel = this._currentLevel
+  }
+
+  set currentAudioTrack(lang) {
+    this._currentAudioTrack = lang
+    this.trigger(Events.PLAYBACK_AUDIO_TRACK_SWITCH_START)
+    const trackId = this._getAudioTrackId(lang)
+    this._hls.audioTrack = trackId
   }
 
   get _startTime() {
@@ -172,6 +187,8 @@ export default class HlsjsPlayback extends HTML5Video {
     this._hls.on(HLSJS.Events.ERROR, (evt, data) => this._onHLSJSError(evt, data))
     this._hls.on(HLSJS.Events.SUBTITLE_TRACK_LOADED, (evt, data) => this._onSubtitleLoaded(evt, data))
     this._hls.on(HLSJS.Events.SUBTITLE_TRACKS_UPDATED, () => this._ccTracksUpdated = true)
+    this._hls.on(HLSJS.Events.AUDIO_TRACKS_UPDATED, (evt, data) => this._loadAudioTracks(evt, data))
+    this._hls.on(HLSJS.Events.AUDIO_TRACKS_SWITCHED, (evt, data) => this.trigger(Events.PLAYBACK_AUDIO_TRACK_SWITCH_END))
     this._hls.attachMedia(this.el)
   }
 
@@ -459,7 +476,7 @@ export default class HlsjsPlayback extends HTML5Video {
 
   _fillLevels() {
     this._levels = this._hls.levels.map((level, index) => {
-      return { id: index, level: level, label: `${level.bitrate/1000}Kbps` }
+      return { id: index, level: level, audioGroupIds: level.audioGroupIds, label: `${level.bitrate/1000}Kbps` }
     })
     this.trigger(Events.PLAYBACK_LEVELS_AVAILABLE, this._levels)
   }
@@ -599,7 +616,7 @@ export default class HlsjsPlayback extends HTML5Video {
     this.trigger(Events.PLAYBACK_FRAGMENT_LOADED, data)
   }
 
-  _onSubtitleLoaded() {
+  _onSubtitleLoaded(event, data) {
     // This event may be triggered multiple times
     // Setup CC only once (disable CC by default)
     if (!this._ccIsSetup) {
@@ -629,6 +646,38 @@ export default class HlsjsPlayback extends HTML5Video {
         level: data.level
       })
     }
+  }
+
+  _loadAudioTracks(evt, data) {
+    const langs = [...new Set(data.audioTracks.map(at => at.lang))]
+    const audioTracks = []
+    for (let i = 0; langs.length > i; i++) {
+      const langsTracks = data.audioTracks.filter(at => at.lang === langs[i])
+      const audioTrack = {
+        lang: langs[i],
+        name: langsTracks[0].name,
+        url: langsTracks[0].url,
+        type: langsTracks[0].type,
+        default: !!langsTracks.filter(at => at.default),
+        byGroups: langsTracks.map(at => {
+          return {
+            id: at.id,
+            groupId: at.groupId
+          }
+        })
+      }
+      audioTracks.push(audioTrack)
+    }
+    this._audioTracks = audioTracks
+    this._currentAudioTrack = audioTracks.filter(at => at.default).lang
+    this.trigger(Events.PLAYBACK_AUDIO_TRACKS_AVAILABLE, this._audioTracks)
+  }
+
+  _getAudioTrackId(lang) {
+    const currentLevel = this._hls.currentLevel
+    const audioTracks = this._audioTracks.filter(at => at.lang === lang).byGroups
+    const trackId = audioTracks.filter(at => currentLevel.audioGroupIds.includes(at.groupId))[0].id
+    return trackId
   }
 
   get dvrEnabled() {
