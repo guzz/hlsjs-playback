@@ -1,4 +1,4 @@
-import { Core, Events } from '@clappr/core'
+import { Core, Events } from '@guzzj/clappr-core'
 import HlsjsPlayback from './hls.js'
 import HLSJS from 'hls.js'
 
