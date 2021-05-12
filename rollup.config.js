@@ -8,7 +8,7 @@ import serve from 'rollup-plugin-serve'
 import size from 'rollup-plugin-sizes'
 import { terser } from 'rollup-plugin-terser'
 import visualize from 'rollup-plugin-visualizer'
-import { version as clapprCoreVersion } from '@clappr/core/package.json'
+import { version as clapprCoreVersion } from '@guzzj/clappr-core/package.json'
 import pkg from './package.json'
 
 let rollupConfig
@@ -38,25 +38,25 @@ reloadEnabled && (plugins = [...plugins, livereload(livereloadPluginOptions)])
 analyzeBundle && plugins.push(visualize({ open: true }))
 
 const mainBundle = {
-  external: ['@clappr/core'],
+  external: ['@guzzj/clappr-core'],
   input: 'src/hls.js',
   output: {
     name: 'HlsjsPlayback',
     file: pkg.main,
     format: 'umd',
-    globals: { '@clappr/core': 'Clappr' },
+    globals: { '@guzzj/clappr-core': 'Clappr' },
   },
   plugins,
 }
 
 const mainBundleWithoutHLS = {
-  external: ['@clappr/core', 'hls.js'],
+  external: ['@guzzj/clappr-core', 'hls.js'],
   input: 'src/hls.js',
   output: {
     name: 'HlsjsPlayback',
     file: 'dist/hlsjs-playback.external.js',
     format: 'umd',
-    globals: { '@clappr/core': 'Clappr', 'hls.js': 'Hls' },
+    globals: { '@guzzj/clappr-core': 'Clappr', 'hls.js': 'Hls' },
   },
   plugins,
 }
@@ -74,12 +74,12 @@ const mainBundleMinified = {
 }
 
 const mainBundleWithoutHLSMinified = {
-  external: ['@clappr/core', 'hls.js'],
+  external: ['@guzzj/clappr-core', 'hls.js'],
   input: 'src/hls.js',
   output: {
     name: 'HlsjsPlayback',
     file: 'dist/hlsjs-playback.external.min.js',
-    globals: { '@clappr/core': 'Clappr', 'hls.js': 'Hls' },
+    globals: { '@guzzj/clappr-core': 'Clappr', 'hls.js': 'Hls' },
     format: 'iife',
     sourcemap: true,
     plugins: terser(),
@@ -88,13 +88,13 @@ const mainBundleWithoutHLSMinified = {
 }
 
 const moduleBundle = {
-  external: ['@clappr/core'],
+  external: ['@guzzj/clappr-core'],
   input: 'src/hls.js',
   output: {
     name: 'HlsjsPlayback',
     file: pkg.module,
     format: 'esm',
-    globals: { '@clappr/core': 'Clappr' },
+    globals: { '@guzzj/clappr-core': 'Clappr' },
   },
   plugins,
 }

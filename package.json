@@ -1,5 +1,5 @@
 {
-  "name": "@clappr/hlsjs-playback",
+  "name": "@guzzj/hlsjs-playback",
   "version": "0.5.3",
   "description": "HLS Playback based on hls.js",
   "main": "./dist/hlsjs-playback.js",
@@ -26,22 +26,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:clappr/hlsjs-playback.git"
+    "url": "git@github.com:guzz/hlsjs-playback.git"
   },
   "author": "Globo.com",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/clappr/hlsjs-playback/issues"
   },
-  "homepage": "https://github.com/clappr/hlsjs-playback",
+  "homepage": "https://github.com/guzz/hlsjs-playback",
   "peerDependencies": {
-    "@clappr/core": "^0.4.17",
+    "@guzzj/clappr-core": "^0.4.19",
     "hls.js": "^0.14.17"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
-    "@clappr/core": "^0.4.17",
+    "@guzzj/clappr-core": "^0.4.19",
     "@rollup/plugin-babel": "^5.2.3",
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.1.1",
