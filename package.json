@@ -1,6 +1,6 @@
 {
   "name": "@guzzj/hlsjs-playback",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "HLS Playback based on hls.js",
   "main": "./dist/hlsjs-playback.js",
   "module": "./dist/hlsjs-playback.esm.js",
